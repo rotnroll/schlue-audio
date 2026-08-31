@@ -1,0 +1,4 @@
+f9ef96691cc82a98edc6ed1ddb86d3e2134c544c62aa8022d7c3c1329d0293cf  macos/RelaTilt-1.0-macos-universal.pkg
+fce911c18227451e223648b0d924186e8ec5694eef1779ed49be8042c801b831  macos/RelaTilt-1.0-macos-universal.zip
+48407a67687d020cdbf8128ebe082ff3de9a0ba5550eaa2ef1d8431478dd70a9  win64/RelaTilt-1.0-windows-x64-setup.exe
+3278dd6b5ae40ef10f770b08669acd66a8301200b495bc26663c99cc4bebded8  win64/RelaTilt-1.0-windows-x64.zip

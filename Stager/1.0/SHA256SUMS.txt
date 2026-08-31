@@ -1,0 +1,4 @@
+dab5571e42223d347da87980851d8db93ff63c14c81b45823c122fd6199bfbac  macos/Stager-1.0-macos-universal.pkg
+391032dd904a844a8f126c79839e6e533ee1cde06883e1ffb4a5e8bd3b31bce2  macos/Stager-1.0-macos-universal.zip
+f85f95c2ce8fe56abb8e2880f4647754affbc7c55145c636e0c45d1d89d827f0  win64/Stager-1.0-windows-x64-setup.exe
+6001b0a599ec3a38262953554a3fff3758b4a37223d422b0d01d9af63d7313f2  win64/Stager-1.0-windows-x64.zip
