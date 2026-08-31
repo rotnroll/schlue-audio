@@ -1,0 +1,18 @@
+{
+  "plugins": [
+    {
+      "id": "relatilt",
+      "name": "RelaTilt",
+      "directory": "Relatilt",
+      "releaseTagPrefix": "relatilt-v",
+      "assetPrefix": "RelaTilt-"
+    },
+    {
+      "id": "stager",
+      "name": "Stager",
+      "directory": "Stager",
+      "releaseTagPrefix": "stager-v",
+      "assetPrefix": "Stager-"
+    }
+  ]
+}
