@@ -1,0 +1,4 @@
+.pat/
+_site/
+/downloads.json
+__pycache__/

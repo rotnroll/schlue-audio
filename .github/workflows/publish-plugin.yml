@@ -1,0 +1,127 @@
+name: Publish plug-in binaries
+
+on:
+  workflow_call:
+    inputs:
+      plugin-directory:
+        description: Plug-in directory/name configured in schlue-audio/plugins.json
+        required: true
+        type: string
+      version:
+        description: Published plug-in version
+        required: true
+        type: string
+      windows-artifact:
+        description: Exact Windows artifact name in the caller run
+        required: true
+        type: string
+      macos-artifact:
+        description: Exact macOS artifact name in the caller run
+        required: true
+        type: string
+    secrets:
+      release_token:
+        description: Fine-grained token with Contents write access to rotnroll/schlue-audio
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish to schlue-audio Releases
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Download Windows packages
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.windows-artifact }}
+          path: incoming/win64
+
+      - name: Download macOS packages
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.macos-artifact }}
+          path: incoming/macos
+
+      - name: Check out distribution metadata
+        uses: actions/checkout@v5
+        with:
+          repository: rotnroll/schlue-audio
+          ref: main
+          path: distribution
+
+      - name: Resolve release metadata
+        id: metadata
+        working-directory: distribution
+        env:
+          PLUGIN_DIRECTORY: ${{ inputs.plugin-directory }}
+          PLUGIN_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          plugin="$(jq -cer --arg directory "$PLUGIN_DIRECTORY" '.plugins[] | select(.directory == $directory)' plugins.json)"
+          prefix="$(jq -r '.releaseTagPrefix' <<<"$plugin")"
+          name="$(jq -r '.name' <<<"$plugin")"
+          [[ "$PLUGIN_VERSION" =~ ^[0-9]+(\.[0-9]+)*([-+][A-Za-z0-9.-]+)?$ ]]
+          echo "tag=${prefix}${PLUGIN_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "title=${name} ${PLUGIN_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare Release assets and checksums
+        run: bash distribution/scripts/stage-release.sh incoming release-assets
+
+      - name: Publish immutable GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.release_token }}
+          GH_REPO: rotnroll/schlue-audio
+          RELEASE_TAG: ${{ steps.metadata.outputs.tag }}
+          RELEASE_TITLE: ${{ steps.metadata.outputs.title }}
+        run: |
+          set -euo pipefail
+          expected="$(find release-assets -maxdepth 1 -type f -printf '%f\n' | sort)"
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            actual="$(gh release view "$RELEASE_TAG" --json assets --jq '.assets[].name' | sort)"
+            is_draft="$(gh release view "$RELEASE_TAG" --json isDraft --jq '.isDraft')"
+
+            if [[ "$is_draft" == "true" ]]; then
+              unexpected="$(comm -13 <(printf '%s\n' "$expected") <(printf '%s\n' "$actual"))"
+              if [[ -n "$unexpected" ]]; then
+                echo "Draft $RELEASE_TAG contains unexpected assets:" >&2
+                printf '%s\n' "$unexpected" >&2
+                exit 1
+              fi
+
+              mkdir existing
+              while IFS= read -r asset; do
+                if grep -Fxq "$asset" <<<"$actual"; then
+                  gh release download "$RELEASE_TAG" --pattern "$asset" --dir existing
+                  cmp "release-assets/$asset" "existing/$asset"
+                else
+                  gh release upload "$RELEASE_TAG" "release-assets/$asset"
+                fi
+              done <<<"$expected"
+              gh release edit "$RELEASE_TAG" --draft=false
+              exit 0
+            fi
+
+            if [[ "$actual" != "$expected" ]]; then
+              echo "Published asset set differs for immutable release $RELEASE_TAG" >&2
+              diff -u <(printf '%s\n' "$expected") <(printf '%s\n' "$actual") || true
+              exit 1
+            fi
+            mkdir existing
+            gh release download "$RELEASE_TAG" --pattern SHA256SUMS.txt --dir existing
+            cmp release-assets/SHA256SUMS.txt existing/SHA256SUMS.txt
+            echo "Release $RELEASE_TAG already exists with matching assets."
+            exit 0
+          fi
+
+          gh release create "$RELEASE_TAG" \
+            --target main \
+            --title "$RELEASE_TITLE" \
+            --notes "Binary distributions and SHA-256 checksums for $RELEASE_TITLE." \
+            --draft
+          gh release upload "$RELEASE_TAG" release-assets/*
+          gh release edit "$RELEASE_TAG" --draft=false
