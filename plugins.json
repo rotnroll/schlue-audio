@@ -13,6 +13,13 @@
       "directory": "Stager",
       "releaseTagPrefix": "stager-v",
       "assetPrefix": "Stager-"
+    },
+    {
+      "id": "rerider",
+      "name": "ReRider",
+      "directory": "ReRider",
+      "releaseTagPrefix": "rerider-v",
+      "assetPrefix": "ReRider-"
     }
   ]
 }

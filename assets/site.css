@@ -113,6 +113,7 @@ main {
 }
 
 .hero-logo.stager-logo { max-height: 88px; max-width: min(390px, 72%); height: auto; margin: 26px 0 30px; }
+.hero-logo.rerider-logo { max-height: 78px; max-width: min(500px, 82%); height: auto; margin: 26px 0 30px; }
 
 .product-intro h1 {
   margin: 0 0 18px;

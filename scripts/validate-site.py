@@ -115,7 +115,7 @@ def main():
     pages = [site_root / "index.html", site_root / "404.html", site_root / "contact" / "index.html"]
     pages.extend(site_root / item["directory"] / "index.html" for item in config["plugins"])
 
-    forbidden = ("github.com/rotnroll/relatilt", "github.com/rotnroll/stager")
+    forbidden = tuple(f"github.com/rotnroll/{plugin['id']}" for plugin in config["plugins"])
     readme = (root / "README.md").read_text(encoding="utf-8").lower()
     if any(value in readme for value in forbidden):
         errors.append("Source-code link found in README.md")
