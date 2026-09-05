@@ -20,6 +20,13 @@
       "directory": "ReRider",
       "releaseTagPrefix": "rerider-v",
       "assetPrefix": "ReRider-"
+    },
+    {
+      "id": "sarg1",
+      "name": "SA RG-1",
+      "directory": "SARG1",
+      "releaseTagPrefix": "sarg1-v",
+      "assetPrefix": "SA-RG-1-"
     }
   ]
 }
