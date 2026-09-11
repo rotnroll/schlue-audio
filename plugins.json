@@ -27,6 +27,13 @@
       "directory": "SARG1",
       "releaseTagPrefix": "sarg1-v",
       "assetPrefix": "SA-RG-1-"
+    },
+    {
+      "id": "axetune",
+      "name": "AxeTune",
+      "directory": "AxeTune",
+      "releaseTagPrefix": "axetune-v",
+      "assetPrefix": "AxeTune-"
     }
   ]
 }

@@ -63,6 +63,19 @@ class DownloadCatalogTests(unittest.TestCase):
         self.assertEqual(catalog["plugins"]["rerider"]["downloads"], 8)
         self.assertEqual(catalog["schema"], 2)
 
+    def test_axetune_release_maps_both_platforms_and_counts_downloads(self):
+        release = self.release("axetune-v1.0.0")
+        catalog = CATALOG.build_catalog(self.config, [release], "rotnroll/schlue-audio", "now")
+        plugin = catalog["plugins"]["axetune"]
+        self.assertEqual(plugin["name"], "AxeTune")
+        self.assertEqual(plugin["downloads"], 17)
+        version = plugin["versions"][0]
+        self.assertEqual(version["version"], "1.0.0")
+        self.assertEqual(set(version["platforms"]), {"win64", "macos"})
+        for packages in version["platforms"].values():
+            self.assertEqual(len(packages), 2)
+        self.assertEqual(version["checksums"]["name"], "SHA256SUMS.txt")
+
     def test_rejects_unmapped_binary(self):
         release = self.release("relatilt-v1.0")
         release["assets"].append(asset("relatilt-v1.0", "RelaTilt-1.0.zip", 100, 1))
