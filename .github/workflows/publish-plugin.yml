@@ -13,11 +13,19 @@ on:
         type: string
       windows-artifact:
         description: Exact Windows artifact name in the caller run
-        required: true
+        required: false
         type: string
       macos-artifact:
         description: Exact macOS artifact name in the caller run
-        required: true
+        required: false
+        type: string
+      windows-release-id:
+        description: Unpublished Windows CI package release in schlue-audio
+        required: false
+        type: string
+      macos-release-id:
+        description: Unpublished macOS CI package release in schlue-audio
+        required: false
         type: string
     secrets:
       release_token:
@@ -30,21 +38,25 @@ permissions:
 jobs:
   publish:
     name: Publish to schlue-audio Releases
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     steps:
-      - name: Download Windows packages
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ inputs.windows-artifact }}
-          path: incoming/win64
-
-      - name: Download macOS packages
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ inputs.macos-artifact }}
-          path: incoming/macos
+      - name: Validate package source
+        env:
+          WINDOWS_RELEASE: ${{ inputs.windows-release-id }}
+          MACOS_RELEASE: ${{ inputs.macos-release-id }}
+          WINDOWS_ARTIFACT: ${{ inputs.windows-artifact }}
+          MACOS_ARTIFACT: ${{ inputs.macos-artifact }}
+        run: |
+          set -euo pipefail
+          if [[ -n "$WINDOWS_RELEASE" || -n "$MACOS_RELEASE" ]]; then
+            [[ "$WINDOWS_RELEASE" =~ ^[1-9][0-9]*$ && "$MACOS_RELEASE" =~ ^[1-9][0-9]*$ ]]
+            [[ -z "$WINDOWS_ARTIFACT" && -z "$MACOS_ARTIFACT" ]]
+          else
+            [[ -n "$WINDOWS_ARTIFACT" && -n "$MACOS_ARTIFACT" ]]
+          fi
 
       - name: Check out distribution metadata
         uses: actions/checkout@v5
@@ -52,6 +64,37 @@ jobs:
           repository: rotnroll/schlue-audio
           ref: main
           path: distribution
+          persist-credentials: false
+
+      - name: Fetch and verify CI packages
+        if: inputs.windows-release-id != ''
+        env:
+          GH_TOKEN: ${{ secrets.release_token }}
+          WINDOWS_RELEASE: ${{ inputs.windows-release-id }}
+          MACOS_RELEASE: ${{ inputs.macos-release-id }}
+          PLUGIN_DIRECTORY: ${{ inputs.plugin-directory }}
+          PLUGIN_VERSION: ${{ inputs.version }}
+        run: |
+          python distribution/scripts/ci-delivery.py fetch --require-main \
+            --plugin-directory "$PLUGIN_DIRECTORY" --version "$PLUGIN_VERSION" \
+            --platform windows --release-id "$WINDOWS_RELEASE" --directory incoming/win64
+          python distribution/scripts/ci-delivery.py fetch --require-main \
+            --plugin-directory "$PLUGIN_DIRECTORY" --version "$PLUGIN_VERSION" \
+            --platform macos --release-id "$MACOS_RELEASE" --directory incoming/macos
+
+      - name: Download Windows packages
+        if: inputs.windows-release-id == ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.windows-artifact }}
+          path: incoming/win64
+
+      - name: Download macOS packages
+        if: inputs.macos-release-id == ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.macos-artifact }}
+          path: incoming/macos
 
       - name: Resolve release metadata
         id: metadata
