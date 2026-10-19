@@ -1,0 +1,45 @@
+name: Clean up old Actions runs
+
+on:
+  schedule:
+    - cron: "43 3 * * *"
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Preview without deleting runs
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      dry-run:
+        type: boolean
+        default: true
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: cleanup-old-actions-runs
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          repository: rotnroll/schlue-audio
+          ref: main
+          persist-credentials: false
+      - name: Retain latest completed run per workflow and branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_REPOSITORY: ${{ github.repository }}
+          APPLY: ${{ github.event_name == 'schedule' || inputs.dry-run == false }}
+        shell: bash
+        run: |
+          args=()
+          if [[ "$APPLY" == "true" ]]; then args+=(--apply); fi
+          python scripts/cleanup-runs.py "$TARGET_REPOSITORY" "${args[@]}"

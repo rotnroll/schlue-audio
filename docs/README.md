@@ -2,6 +2,35 @@
 
 This guide covers the one-time setup required to add a new plug-in repository to the Schlue Audio website, binary distribution, and download counter. New plug-ins are deliberately not added to the website automatically.
 
+## Actions storage cleanup
+
+For each new source repository, copy `.github/workflows/cleanup-runs.yml` from
+an existing plug-in repository (for example AxeTune). This caller runs daily
+and uses the central cleanup workflow with the repository's automatic
+`GITHUB_TOKEN`; no extra secret is needed. Enable `actions: write` and
+`contents: read` as shown in the caller. Scheduled workflows must be on the
+repository's default branch.
+
+Cleanup keeps the latest completed run for each workflow and branch. If that
+group has any unfinished run, all its runs are temporarily preserved. Forks
+are handled separately. Manual dispatch defaults to a read-only preview;
+disable `dry-run` to perform cleanup. Old run logs and Actions artifacts are
+permanently deleted, so those runs cannot subsequently be rerun or inspected.
+GitHub Releases, release assets, tags, source commits, and download counts are
+not modified. The latest run's artifacts still expire under the repository's
+normal artifact retention policy.
+
+For local inspection with an authenticated GitHub CLI:
+
+```sh
+python scripts/cleanup-runs.py rotnroll/exampleplugin
+```
+
+Add `--apply` only when deletion is intended. The script stops on API errors.
+Deploy the central workflow and script before deploying callers in source
+repositories. Keeping one run per branch can still exceed the account's free
+storage allowance if there are many branches or large artifacts.
+
 ## 1. Prepare the plug-in build
 
 The source repository needs a GitHub Actions workflow that builds and tests all supported packages before publishing:
