@@ -6,6 +6,7 @@ Free audio plug-ins for Windows and macOS.
 
 | Plug-in | Binary downloads |
 | --- | --- |
+| Decllypse | [Download](https://rotnroll.github.io/schlue-audio/Decllypse/) |
 | RelaTilt | [Download](https://rotnroll.github.io/schlue-audio/Relatilt/) |
 | Stager | [Download](https://rotnroll.github.io/schlue-audio/Stager/) |
 | ReRider | [Download](https://rotnroll.github.io/schlue-audio/ReRider/) |

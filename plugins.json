@@ -34,6 +34,13 @@
       "directory": "AxeTune",
       "releaseTagPrefix": "axetune-v",
       "assetPrefix": "AxeTune-"
+    },
+    {
+      "id": "decllypse",
+      "name": "Decllypse",
+      "directory": "Decllypse",
+      "releaseTagPrefix": "decllypse-v",
+      "assetPrefix": "Decllypse-"
     }
   ]
 }
