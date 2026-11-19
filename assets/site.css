@@ -310,40 +310,79 @@ h1 {
 }
 
 .ai-disclosure {
-  max-width: 70ch;
+  max-width: 540px;
   margin-top: 8px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
-.ai-disclosure summary {
-  width: fit-content;
-  list-style: none;
-  cursor: pointer;
+.disclosure-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
 }
 
-.ai-disclosure summary::-webkit-details-marker { display: none; }
-
-.disclosure-more {
+.disclosure-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
   color: var(--mint);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color .2s ease, background .2s ease;
 }
 
-.ai-disclosure summary:hover .disclosure-more { color: var(--text); }
+.disclosure-toggle:hover {
+  border-color: var(--mint-dim);
+  background: var(--panel-2);
+}
 
-.ai-disclosure summary:focus-visible {
+.disclosure-toggle svg { transition: transform .24s ease; }
+.disclosure-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.disclosure-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows .24s ease, opacity .24s ease;
+}
+
+.ai-disclosure.is-open .disclosure-panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.disclosure-panel-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.disclosure-toggle:focus-visible {
   outline: 2px solid var(--mint);
   outline-offset: 4px;
   border-radius: 2px;
 }
 
-.ai-disclosure p {
-  margin: 12px 0 0;
-  color: var(--text);
-  font-size: 16px;
-  line-height: 1.6;
+.disclosure-panel p {
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  color: #b7c7c0;
+  font-size: 13px;
+  line-height: 1.65;
 }
 
 .plugin-card {

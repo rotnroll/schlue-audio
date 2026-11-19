@@ -35,10 +35,20 @@
           <div>
             <h1 id="plugins-title">Plug-ins</h1>
             <p class="plugin-note">Free for the taking, grab your copy now!</p>
-            <details class="ai-disclosure">
-              <summary>Disclaimer: AI-driven development. <span class="disclosure-more">[More]</span></summary>
-              <p>I'm a full-time software engineer and hobbyist mix engineer, with more plugin ideas than time to implement them. AI helps me with the coding, while I put my energy into the concepts, groundwork, and detailed specifications. That's actually the part I enjoy most. AI makes it possible for me to bring these ideas to life in my spare time.</p>
-            </details>
+            <div class="ai-disclosure">
+              <div class="disclosure-heading">
+                <span>Disclaimer: AI-driven development.</span>
+                <button class="disclosure-toggle" type="button" aria-expanded="false" aria-controls="ai-disclosure-panel">
+                  Details
+                  <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg>
+                </button>
+              </div>
+              <div class="disclosure-panel" id="ai-disclosure-panel" aria-hidden="true" inert>
+                <div class="disclosure-panel-inner">
+                  <p>I'm a full-time software engineer and hobbyist mix engineer, with more plugin ideas than time to implement them. AI helps me with the coding, while I put my energy into the concepts, groundwork, and detailed specifications. That's actually the part I enjoy most. AI makes it possible for me to bring these ideas to life in my spare time.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

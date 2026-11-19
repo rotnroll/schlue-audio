@@ -1,4 +1,16 @@
 (() => {
+  document.querySelectorAll(".disclosure-toggle").forEach((button) => {
+    const disclosure = button.closest(".ai-disclosure");
+    const panel = document.getElementById(button.getAttribute("aria-controls"));
+    button.addEventListener("click", () => {
+      const expanded = button.getAttribute("aria-expanded") !== "true";
+      button.setAttribute("aria-expanded", String(expanded));
+      panel.setAttribute("aria-hidden", String(!expanded));
+      panel.inert = !expanded;
+      disclosure.classList.toggle("is-open", expanded);
+    });
+  });
+
   const root = document.body.dataset.root || ".";
   const pluginId = document.body.dataset.plugin;
   const downloads = document.querySelector("[data-downloads]");
