@@ -327,25 +327,18 @@ h1 {
 .disclosure-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  min-height: 28px;
-  padding: 4px 9px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  background: var(--panel);
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
   color: var(--mint);
   font: inherit;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .07em;
-  text-transform: uppercase;
   cursor: pointer;
-  transition: border-color .2s ease, background .2s ease;
 }
 
 .disclosure-toggle:hover {
-  border-color: var(--mint-dim);
-  background: var(--panel-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .disclosure-toggle svg { transition: transform .24s ease; }
@@ -369,8 +362,8 @@ h1 {
 }
 
 .disclosure-toggle:focus-visible {
-  outline: 2px solid var(--mint);
-  outline-offset: 4px;
+  outline: 1px solid var(--mint);
+  outline-offset: 2px;
   border-radius: 2px;
 }
 
