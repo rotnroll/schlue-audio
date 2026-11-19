@@ -1,4 +1,12 @@
 (() => {
+  document.querySelectorAll(".directory-shot").forEach((shot) => {
+    const backdrop = shot.querySelector("img").cloneNode();
+    backdrop.className = "screenshot-backdrop";
+    backdrop.alt = "";
+    backdrop.setAttribute("aria-hidden", "true");
+    shot.prepend(backdrop);
+  });
+
   document.querySelectorAll(".disclosure-toggle").forEach((button) => {
     const disclosure = button.closest(".ai-disclosure");
     const panel = document.getElementById(button.getAttribute("aria-controls"));
