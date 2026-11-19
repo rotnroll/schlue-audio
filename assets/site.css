@@ -309,6 +309,43 @@ h1 {
   line-height: 1.5;
 }
 
+.ai-disclosure {
+  max-width: 70ch;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ai-disclosure summary {
+  width: fit-content;
+  list-style: none;
+  cursor: pointer;
+}
+
+.ai-disclosure summary::-webkit-details-marker { display: none; }
+
+.disclosure-more {
+  color: var(--mint);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ai-disclosure summary:hover .disclosure-more { color: var(--text); }
+
+.ai-disclosure summary:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.ai-disclosure p {
+  margin: 12px 0 0;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
 .plugin-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
