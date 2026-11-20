@@ -416,9 +416,11 @@ h1 {
 
 .card-copy h2 { margin: 0 0 8px; font-size: 22px; letter-spacing: -.02em; }
 
-.plugin-download-count {
-  align-self: flex-start;
-  min-width: 3ch;
+.plugin-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
   margin-top: auto;
   padding-top: 20px;
   color: var(--muted);
@@ -426,6 +428,8 @@ h1 {
   font-variant-numeric: tabular-nums;
   opacity: .62;
 }
+
+.plugin-download-count { text-align: right; }
 
 .card-copy p {
   color: #b7c7c0;

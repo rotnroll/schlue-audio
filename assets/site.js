@@ -74,6 +74,19 @@
       countSlots.forEach((slot) => {
         const countedPlugin = catalog.plugins[slot.dataset.downloadCount];
         if (!countedPlugin || !Number.isInteger(countedPlugin.downloads)) return;
+        const latest = countedPlugin.versions[0];
+        const releaseSlot = slot.parentElement.querySelector("[data-release-info]");
+        if (latest && releaseSlot) {
+          const parts = latest.version.match(/^(\d+(?:\.\d+)*)(.*)$/);
+          const components = parts ? parts[1].split(".") : [];
+          while (components.length && components.length < 3) components.push("0");
+          const displayVersion = parts ? components.join(".") + parts[2] : latest.version;
+          const date = latest.publishedAt && new Date(latest.publishedAt);
+          const formattedDate = date && !Number.isNaN(date.getTime())
+            ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(date)
+            : "";
+          releaseSlot.textContent = `v${displayVersion}${formattedDate ? ` · ${formattedDate}` : ""}`;
+        }
         slot.textContent = countedPlugin.downloads.toLocaleString();
         slot.setAttribute("aria-label", `${countedPlugin.downloads.toLocaleString()} downloads`);
       });

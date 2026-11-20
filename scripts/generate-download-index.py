@@ -132,6 +132,7 @@ def build_catalog(config: dict, releases: list[dict], repository: str, generated
             plugin_versions.append({
                 "version": version,
                 "tag": tag,
+                "publishedAt": release.get("published_at"),
                 "downloads": version_downloads,
                 "platforms": platforms,
                 "checksums": checksum,
